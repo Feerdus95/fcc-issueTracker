@@ -69,12 +69,16 @@ const startServer = () => {
     console.log('Your app is listening on port ' + PORT);
     console.log('Environment:', process.env.NODE_ENV || 'development');
   });
+  
+  return listener;
 };
 
-// Only start the server in development or production mode, not in test mode
-if (process.env.NODE_ENV !== 'test') {
+// Only start the server in development, production, or when FORCE_START=true
+// This allows us to control server startup in test environments
+const isRenderDeploy = process.env.RENDER || false;
+if (process.env.NODE_ENV !== 'test' || isRenderDeploy) {
   startServer();
 }
 
-// Export the app for testing
-module.exports = app;
+// Export the app and startServer function for testing
+module.exports = { app, startServer };
