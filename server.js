@@ -4,7 +4,6 @@ const express     = require('express');
 const bodyParser  = require('body-parser');
 const expect      = require('chai').expect;
 const cors        = require('cors');
-const path = require('path');
 require('dotenv').config();
 
 const apiRoutes         = require('./routes/api.js');
@@ -13,12 +12,9 @@ const runner            = require('./test-runner');
 
 let app = express();
 
-// Serve static files from the public directory
 app.use('/public', express.static(process.cwd() + '/public'));
-// Also serve static files from the root path
-app.use(express.static(process.cwd() + '/public'));
 
-app.use(cors({origin: '*'})); //For FCC testing purposes only
+app.use(cors({origin: '*'}));  // For FCC testing purposes only
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -60,25 +56,23 @@ app.use(function(req, res, next) {
     .send('Not Found');
 });
 
-// Start server for normal operation
-const startServer = (testPort) => {
-  // Get PORT from environment variable for services like Render
-  const PORT = testPort || process.env.PORT || 3000;
+// Simple server startup function without conditional logic
+const startServer = (port) => {
+  // Use PORT env variable or default to 3000
+  const PORT = port || process.env.PORT || 3000;
   
-  const listener = app.listen(PORT, '0.0.0.0', function () {
-    console.log('Your app is listening on port ' + PORT);
-    console.log('Environment:', process.env.NODE_ENV || 'development');
+  return app.listen(PORT, function() {
+    console.log('Listening on port ' + PORT);
   });
-  
-  return listener;
 };
 
-// Only start the server in development, production, or when FORCE_START=true
-// This allows us to control server startup in test environments
-const isRenderDeploy = process.env.RENDER || false;
-if (process.env.NODE_ENV !== 'test' || isRenderDeploy) {
+// For testing
+if (process.env.NODE_ENV === 'test') {
+  // Don't start the server automatically in test mode - tests will call startServer
+  console.log('Test environment - server will be started by tests');
+} else {
+  // In development and production, start the server automatically
   startServer();
 }
 
-// Export the app and startServer function for testing
 module.exports = { app, startServer };

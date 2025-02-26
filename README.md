@@ -115,6 +115,29 @@ Deletes an issue.
 - **Backend**: Node.js, Express.js
 - **Testing**: Mocha, Chai
 
+## 🚀 Deployment
+
+### Render Deployment
+
+This project is configured for easy deployment on Render. It includes:
+
+1. **`start-render.js`** - A special startup file that ensures proper port binding for Render
+2. **`Procfile`** - Defines the web process for cloud platforms
+
+To deploy on Render:
+
+1. Connect your GitHub repository to Render
+2. Create a new Web Service
+3. Set the following:
+   - Build Command: `npm install`
+   - Start Command: `npm start`
+   
+4. Set environment variables:
+   - `PORT`: 3000 (or any other port)
+   - `NODE_ENV`: production
+
+The application includes special logic to ensure it works correctly in all environments, including test mode on cloud platforms.
+
 ## 🧪 Testing
 
 Run the test suite with:
