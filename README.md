@@ -126,6 +126,15 @@ The test suite includes:
 - Functional tests for all API endpoints
 - Unit tests for the core functionality
 
+### Testing in Deployment Environments
+
+When deploying to platforms like Render, make sure to set these environment variables:
+- `PORT`: The port your application will listen on (e.g., 3000)
+- `NODE_ENV`: Set to "production" for production environments
+- `RENDER`: Set to "true" if deploying to Render
+
+The application is configured to start the server correctly in all environments, including test mode on Render.
+
 ## 🎓 Credits
 
 This project was created as part of the [freeCodeCamp Quality Assurance certification](https://www.freecodecamp.org/learn/quality-assurance/).

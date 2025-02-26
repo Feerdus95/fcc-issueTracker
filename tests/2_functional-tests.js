@@ -1,11 +1,32 @@
 const chaiHttp = require('chai-http');
 const chai = require('chai');
 const assert = chai.assert;
-const { app } = require('../server');
+const { app, startServer } = require('../server');
 
 chai.use(chaiHttp);
 
+// Global server instance for tests
+let server;
+// Use a different port for testing to avoid conflicts
+const TEST_PORT = 3001;
+
 suite('Functional Tests', function() {
+    // Setup - start server before tests
+    suiteSetup(function(done) {
+        // Start server for testing with a different port
+        server = startServer(TEST_PORT);
+        done();
+    });
+
+    // Cleanup - close server after tests
+    suiteTeardown(function(done) {
+        // Close server connection after tests
+        if (server) {
+            server.close();
+        }
+        done();
+    });
+
     // Variable to store _id from a created issue for later tests
     let testIssueId;
     

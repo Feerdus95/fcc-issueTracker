@@ -61,9 +61,9 @@ app.use(function(req, res, next) {
 });
 
 // Start server for normal operation
-const startServer = () => {
+const startServer = (testPort) => {
   // Get PORT from environment variable for services like Render
-  const PORT = process.env.PORT || 3000;
+  const PORT = testPort || process.env.PORT || 3000;
   
   const listener = app.listen(PORT, '0.0.0.0', function () {
     console.log('Your app is listening on port ' + PORT);

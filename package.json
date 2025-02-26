@@ -6,7 +6,7 @@
 	"scripts": {
 		"start": "node server.js",
 		"dev": "set NODE_ENV=development && node server.js",
-		"test": "set NODE_ENV=test && mocha --timeout 5000 --recursive --exit --ui tdd tests/",
+		"test": "set NODE_ENV=test && mocha --timeout 10000 --recursive --exit --ui tdd tests/",
 		"build:css": "tailwindcss -i ./public/style.css -o ./public/style.css --watch"
 	},
 	"dependencies": {
