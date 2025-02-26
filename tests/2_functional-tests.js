@@ -1,13 +1,9 @@
 const chaiHttp = require('chai-http');
 const chai = require('chai');
 const assert = chai.assert;
-const { app } = require('../server');
+const server = require('../server');
 
 chai.use(chaiHttp);
-
-// Use the existing app instance from server.js
-// We don't need to start another server instance for testing
-// since we're just using the app object for HTTP testing
 
 suite('Functional Tests', function() {
     // Variable to store _id from a created issue for later tests
@@ -15,7 +11,7 @@ suite('Functional Tests', function() {
     
     test('Create an issue with every field', function (done) {
         chai
-          .request(app)
+          .request(server)
           .post('/api/issues/test-project')
           .send({
             issue_title: 'Test Issue',
@@ -46,7 +42,7 @@ suite('Functional Tests', function() {
 
       test('Create an issue with only required fields', function (done) {
         chai
-          .request(app)
+          .request(server)
           .post('/api/issues/test-project')
           .send({
             issue_title: 'Test Issue',
@@ -71,7 +67,7 @@ suite('Functional Tests', function() {
 
       test('Create an issue with missing required fields', function (done) {
         chai
-          .request(app)
+          .request(server)
           .post('/api/issues/test-project')
           .send({
             issue_title: 'Test Issue',
@@ -88,7 +84,7 @@ suite('Functional Tests', function() {
 
       test('View issues on a project', function (done) {
         chai
-          .request(app)
+          .request(server)
           .get('/api/issues/test-project')
           .end(function (err, res) {
             assert.equal(res.status, 200);
@@ -111,7 +107,7 @@ suite('Functional Tests', function() {
 
       test('View issues on a project with one filter', function (done) {
         chai
-          .request(app)
+          .request(server)
           .get('/api/issues/test-project?open=true')
           .end(function (err, res) {
             assert.equal(res.status, 200);
@@ -126,7 +122,7 @@ suite('Functional Tests', function() {
 
       test('View issues on a project with multiple filters', function (done) {
         chai
-          .request(app)
+          .request(server)
           .get('/api/issues/test-project?open=true&created_by=Tester')
           .end(function (err, res) {
             assert.equal(res.status, 200);
@@ -142,7 +138,7 @@ suite('Functional Tests', function() {
 
       test('Update one field on an issue', function (done) {
         chai
-          .request(app)
+          .request(server)
           .put('/api/issues/test-project')
           .send({
             _id: testIssueId,
@@ -159,7 +155,7 @@ suite('Functional Tests', function() {
 
       test('Update multiple fields on an issue', function (done) {
         chai
-          .request(app)
+          .request(server)
           .put('/api/issues/test-project')
           .send({
             _id: testIssueId,
@@ -178,7 +174,7 @@ suite('Functional Tests', function() {
 
       test('Update an issue with missing _id', function (done) {
         chai
-          .request(app)
+          .request(server)
           .put('/api/issues/test-project')
           .send({
             issue_title: 'Updated Issue Title'
@@ -194,7 +190,7 @@ suite('Functional Tests', function() {
 
       test('Update an issue with no fields to update', function (done) {
         chai
-          .request(app)
+          .request(server)
           .put('/api/issues/test-project')
           .send({
             _id: testIssueId
@@ -212,7 +208,7 @@ suite('Functional Tests', function() {
 
       test('Update an issue with an invalid _id', function (done) {
         chai
-          .request(app)
+          .request(server)
           .put('/api/issues/test-project')
           .send({
             _id: 'invalid_id',
@@ -233,7 +229,7 @@ suite('Functional Tests', function() {
       let deleteIssueId;
       test('Create an issue for deletion test', function (done) {
         chai
-          .request(app)
+          .request(server)
           .post('/api/issues/test-project')
           .send({
             issue_title: 'Issue to Delete',
@@ -249,7 +245,7 @@ suite('Functional Tests', function() {
 
       test('Delete an issue', function (done) {
         chai
-          .request(app)
+          .request(server)
           .delete('/api/issues/test-project')
           .send({
             _id: deleteIssueId
@@ -267,7 +263,7 @@ suite('Functional Tests', function() {
 
       test('Delete an issue with an invalid _id', function (done) {
         chai
-          .request(app)
+          .request(server)
           .delete('/api/issues/test-project')
           .send({
             _id: 'invalid_id'
@@ -285,7 +281,7 @@ suite('Functional Tests', function() {
 
       test('Delete an issue with missing _id', function (done) {
         chai
-          .request(app)
+          .request(server)
           .delete('/api/issues/test-project')
           .send({})
           .end(function (err, res) {

@@ -59,17 +59,32 @@ app.use(function(req, res, next) {
 });
 
 // Simple server startup function without conditional logic
-const startServer = (port) => {
+const startServer = () => {
   // Use PORT env variable or default to 3000
-  const PORT = port || process.env.PORT || 3000;
+  const PORT = process.env.PORT || 3000;
   
   return app.listen(PORT, function() {
     console.log('Listening on port ' + PORT);
   });
 };
 
-// Always start the server regardless of environment
-// This ensures it works in all environments including Render
-startServer();
+// Start server only if not in test mode or explicitly on Render
+if(process.env.NODE_ENV !== 'test' || process.env.RENDER) {
+  const server = startServer();
+}
 
-module.exports = { app, startServer };
+// For FCC testing purposes
+if(process.env.NODE_ENV === 'test') {
+  console.log('Running Tests...');
+  setTimeout(function () {
+    try {
+      runner.run();
+    } catch(e) {
+      console.log('Tests are not valid:');
+      console.error(e);
+    }
+  }, 1500);
+}
+
+// Export app for testing
+module.exports = app;
