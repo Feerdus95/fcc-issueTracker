@@ -13,6 +13,8 @@ const runner            = require('./test-runner');
 let app = express();
 
 app.use('/public', express.static(process.cwd() + '/public'));
+// Also serve static files from the root path
+app.use(express.static(process.cwd() + '/public'));
 
 app.use(cors({origin: '*'}));  // For FCC testing purposes only
 
