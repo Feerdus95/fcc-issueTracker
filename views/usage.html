@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Issue Tracker | API Usage</title>
+  <link rel="stylesheet" href="/custom.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+  <style>
+    .code-block {
+      background-color: #f5f5f5;
+      border-radius: 4px;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      font-family: monospace;
+      white-space: pre-wrap;
+      overflow-x: auto;
+    }
+    .endpoint {
+      font-weight: bold;
+      color: #2563eb;
+    }
+    .method {
+      font-weight: bold;
+      color: #10b981;
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="container header-content">
+      <h1>Issue Tracker</h1>
+      <nav>
+        <ul class="nav-list">
+          <li><a href="/" class="nav-link">Dashboard</a></li>
+          <li><a href="/issues/test-project" class="nav-link">Project Issues</a></li>
+          <li><a href="/usage" class="nav-link active">API Usage</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container" style="padding-top: 1.5rem; padding-bottom: 1.5rem;">
+    <div style="margin-bottom: 2rem;">
+      <h2 style="font-size: 1.75rem; font-weight: 600; margin-bottom: 1rem;">Issue Tracker API Usage</h2>
+      <p style="color: #6b7280; margin-bottom: 1rem;">This guide demonstrates how to use the Issue Tracker API to create, read, update, and delete issues in a project.</p>
+    </div>
+
+    <!-- GET Usage -->
+    <section class="card" style="margin-bottom: 2rem;">
+      <h2 class="card-title">
+        <i class="fas fa-cloud-download-alt"></i>GET Usage (Retrieve Issues)
+      </h2>
+      <div>
+        <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem;">Basic Endpoint</h3>
+        <div class="code-block"><span class="method">GET</span> <span class="endpoint">/api/issues/{project}</span></div>
+        
+        <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem;">With Optional Filters</h3>
+        <div class="code-block"><span class="method">GET</span> <span class="endpoint">/api/issues/{project}?open=true&assigned_to=Joe</span></div>
+        
+        <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem;">Example Response</h3>
+        <div class="code-block">[
+  { 
+    "_id": "5871dda29faedc3491ff93bb",
+    "issue_title": "Fix error in posting data",
+    "issue_text": "When we post data it has an error.",
+    "created_on": "2017-01-08T06:35:14.240Z",
+    "updated_on": "2017-01-08T06:35:14.240Z",
+    "created_by": "Joe",
+    "assigned_to": "Joe",
+    "open": true,
+    "status_text": "In QA"
+  },
+  ...
+]</div>
+      </div>
+    </section>
+
+    <!-- POST Usage -->
+    <section class="card" style="margin-bottom: 2rem;">
+      <h2 class="card-title">
+        <i class="fas fa-cloud-upload-alt"></i>POST Usage (Create Issue)
+      </h2>
+      <div>
+        <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem;">Endpoint</h3>
+        <div class="code-block"><span class="method">POST</span> <span class="endpoint">/api/issues/{project}</span></div>
+        
+        <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem;">Required Fields</h3>
+        <div class="code-block">{
+  "issue_title": "Title",
+  "issue_text": "Description of the issue",
+  "created_by": "Author"
+}</div>
+
+        <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem;">Optional Fields</h3>
+        <div class="code-block">{
+  "assigned_to": "Assignee",
+  "status_text": "Status"
+}</div>
+        
+        <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem;">Example Response</h3>
+        <div class="code-block">{
+  "_id": "5871dda29faedc3491ff93bb",
+  "issue_title": "Fix error in posting data",
+  "issue_text": "When we post data it has an error.",
+  "created_on": "2017-01-08T06:35:14.240Z",
+  "updated_on": "2017-01-08T06:35:14.240Z",
+  "created_by": "Joe",
+  "assigned_to": "Joe",
+  "open": true,
+  "status_text": "In QA"
+}</div>
+      </div>
+    </section>
+
+    <!-- PUT Usage -->
+    <section class="card" style="margin-bottom: 2rem;">
+      <h2 class="card-title">
+        <i class="fas fa-edit"></i>PUT Usage (Update Issue)
+      </h2>
+      <div>
+        <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem;">Endpoint</h3>
+        <div class="code-block"><span class="method">PUT</span> <span class="endpoint">/api/issues/{project}</span></div>
+        
+        <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem;">Required Fields</h3>
+        <div class="code-block">{
+  "_id": "5871dda29faedc3491ff93bb"
+}</div>
+
+        <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem;">Optional Fields (at least one required)</h3>
+        <div class="code-block">{
+  "issue_title": "Updated Title",
+  "issue_text": "Updated description",
+  "created_by": "Updated author",
+  "assigned_to": "New assignee",
+  "status_text": "New status",
+  "open": false
+}</div>
+        
+        <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem;">Success Response</h3>
+        <div class="code-block">{
+  "result": "successfully updated",
+  "_id": "5871dda29faedc3491ff93bb"
+}</div>
+
+        <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem;">Error Responses</h3>
+        <div class="code-block">// If no _id is provided
+{
+  "error": "missing _id"
+}
+
+// If no update fields are sent
+{
+  "error": "no update field(s) sent",
+  "_id": "5871dda29faedc3491ff93bb"
+}
+
+// If _id is invalid or not found
+{
+  "error": "could not update",
+  "_id": "5871dda29faedc3491ff93bb"
+}</div>
+      </div>
+    </section>
+
+    <!-- DELETE Usage -->
+    <section class="card">
+      <h2 class="card-title">
+        <i class="fas fa-trash-alt"></i>DELETE Usage (Delete Issue)
+      </h2>
+      <div>
+        <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem;">Endpoint</h3>
+        <div class="code-block"><span class="method">DELETE</span> <span class="endpoint">/api/issues/{project}</span></div>
+        
+        <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem;">Required Fields</h3>
+        <div class="code-block">{
+  "_id": "5871dda29faedc3491ff93bb"
+}</div>
+        
+        <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem;">Success Response</h3>
+        <div class="code-block">{
+  "result": "successfully deleted",
+  "_id": "5871dda29faedc3491ff93bb"
+}</div>
+
+        <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem;">Error Responses</h3>
+        <div class="code-block">// If no _id is provided
+{
+  "error": "missing _id"
+}
+
+// If _id is invalid or not found
+{
+  "error": "could not delete",
+  "_id": "5871dda29faedc3491ff93bb"
+}</div>
+      </div>
+    </section>
+
+    <!-- Live Example -->
+    <section class="card" style="margin-top: 2rem;">
+      <h2 class="card-title">
+        <i class="fas fa-play"></i>Live Examples
+      </h2>
+      <div>
+        <p>Try these API endpoints directly:</p>
+        <ul style="list-style-type: disc; margin-left: 1.5rem; margin-top: 0.5rem;">
+          <li style="margin-bottom: 0.5rem;">View all issues for test-project: <a href="/api/issues/test-project" target="_blank" class="text-blue-600 hover:underline">/api/issues/test-project</a></li>
+          <li style="margin-bottom: 0.5rem;">View all open issues: <a href="/api/issues/test-project?open=true" target="_blank" class="text-blue-600 hover:underline">/api/issues/test-project?open=true</a></li>
+        </ul>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <p>Issue Tracker &copy; 2025 | A project for freeCodeCamp Quality Assurance certification</p>
+    </div>
+  </footer>
+</body>
+</html>

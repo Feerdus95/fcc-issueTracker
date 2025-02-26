@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Issue Tracker | Project Issues</title>
+  <link rel="stylesheet" href="/custom.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+</head>
+<body class="bg-gray-100 min-h-screen">
+  <header class="header">
+    <div class="container header-content">
+      <h1>Issue Tracker</h1>
+      <nav>
+        <ul class="nav-list">
+          <li><a href="/" class="nav-link">Dashboard</a></li>
+          <li><a href="/issues/test-project" class="nav-link active">Project Issues</a></li>
+          <li><a href="/usage" class="nav-link">API Usage</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container" style="padding-top: 1.5rem; padding-bottom: 1.5rem;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+      <h2 style="font-size: 1.5rem; font-weight: 600;">
+        All Issues for: <span id="projectName">Loading Project...</span>
+      </h2>
+    </div>
+
+    <!-- Issue Form -->
+    <section class="card" style="margin-bottom: 2rem;">
+      <h2 class="card-title">
+        <i class="fas fa-plus-circle"></i>Submit a new issue
+      </h2>
+      <form id="newIssue" method="post" class="space-y-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="form-group">
+            <label for="issue_title" class="form-label">Issue Title</label>
+            <input type="text" name="issue_title" placeholder="Enter issue title" class="form-control" required>
+          </div>
+          <div class="form-group">
+            <label for="created_by" class="form-label">Created By</label>
+            <input type="text" name="created_by" placeholder="Your name" class="form-control" required>
+          </div>
+          <div class="form-group">
+            <label for="assigned_to" class="form-label">Assigned To (Optional)</label>
+            <input type="text" name="assigned_to" placeholder="Assignee name" class="form-control">
+          </div>
+          <div class="form-group">
+            <label for="status_text" class="form-label">Status (Optional)</label>
+            <input type="text" name="status_text" placeholder="Current status" class="form-control">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="issue_text" class="form-label">Issue Description</label>
+          <textarea name="issue_text" placeholder="Describe the issue in detail" class="form-control" required></textarea>
+        </div>
+        <button type="submit" class="btn">
+          <i class="fas fa-save"></i>Submit Issue
+        </button>
+      </form>
+    </section>
+
+    <!-- Project Info -->
+    <section class="card" style="margin-bottom: 2rem;">
+      <h2 class="card-title">
+        <i class="fas fa-info-circle"></i>Project Information
+      </h2>
+      <div class="space-y-4">
+        <div class="p-4 bg-gray-100 rounded-lg">
+          <h3 class="font-medium text-gray-800">Total Issues</h3>
+          <p id="totalIssues" class="text-2xl font-bold text-blue-600 mt-2">Loading...</p>
+        </div>
+        <div class="p-4 bg-gray-100 rounded-lg">
+          <h3 class="font-medium text-gray-800">Open Issues</h3>
+          <p id="openIssues" class="text-2xl font-bold text-green-600 mt-2">Loading...</p>
+        </div>
+        <div class="p-4 bg-gray-100 rounded-lg">
+          <h3 class="font-medium text-gray-800">Closed Issues</h3>
+          <p id="closedIssues" class="text-2xl font-bold text-red-600 mt-2">Loading...</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Issue List -->
+    <section class="card">
+      <h2 class="card-title">
+        <i class="fas fa-tasks"></i>All Issues
+        <span id="issueCount" style="margin-left: 0.5rem; font-size: 0.875rem; color: #6b7280;">(Loading...)</span>
+      </h2>
+      <div id="issueDisplay" class="space-y-4">
+        <!-- Issues will be dynamically inserted here -->
+        <div class="text-center text-gray-500 py-4">
+          <i class="fas fa-spinner fa-spin text-2xl mb-2"></i>
+          <p>Loading issues...</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <p>Issue Tracker &copy; 2025 | A project for freeCodeCamp Quality Assurance certification</p>
+    </div>
+  </footer>
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+  <script>
+    $(function() {
+      // Extract the project name from the URL path
+      let pathParts = window.location.pathname.split('/').filter(Boolean);
+      let currentProject = 'test-project'; // Default fallback
+      
+      // If we're on a path like /issues/test-project, get the project name
+      if (pathParts[0] === 'issues' && pathParts.length > 1) {
+        currentProject = pathParts[1];
+      }
+      
+      let url = "/api/issues/"+currentProject;
+      $('#projectName').text(currentProject);
+      
+      let allIssues = [];
+      
+      // Fetch issues
+      function fetchIssues() {
+        $.ajax({
+          type: "GET",
+          url: url,
+          success: function(data) {
+            allIssues = data;
+            updateIssueDisplay(allIssues);
+            updateStats(allIssues);
+          }
+        });
+      }
+      
+      // Update issue display
+      function updateIssueDisplay(issues) {
+        if (issues.length === 0) {
+          $('#issueDisplay').html('<div class="text-center text-gray-500 py-8"><p>No issues found for this project.</p></div>');
+          return;
+        }
+        
+        let issueHtml = issues.map(function(issue) {
+          let statusClass = issue.open ? 'bg-green-100 border-green-200' : 'bg-red-100 border-red-200';
+          let statusBadge = issue.open 
+            ? '<span class="px-2 py-1 bg-green-500 text-white text-xs rounded-full">Open</span>' 
+            : '<span class="px-2 py-1 bg-red-500 text-white text-xs rounded-full">Closed</span>';
+          
+          return `
+            <div class="issue p-4 rounded-lg border ${statusClass} transition-all hover:shadow-md">
+              <div class="flex justify-between items-start mb-2">
+                <h3 class="text-lg font-semibold">${issue.issue_title}</h3>
+                <div class="flex items-center">
+                  ${statusBadge}
+                </div>
+              </div>
+              <p class="text-gray-600 mb-4">${issue.issue_text}</p>
+              ${issue.status_text ? `<p class="text-gray-700 mb-2"><i class="fas fa-info-circle mr-1"></i>${issue.status_text}</p>` : ''}
+              <div class="flex flex-wrap justify-between text-sm text-gray-500 mb-2">
+                <span><i class="fas fa-user mr-1"></i>Created by: ${issue.created_by}</span>
+                <span><i class="fas fa-user-check mr-1"></i>Assigned to: ${issue.assigned_to || 'Unassigned'}</span>
+              </div>
+              <div class="flex flex-wrap justify-between text-sm text-gray-500 mb-4">
+                <span><i class="fas fa-calendar-alt mr-1"></i>Created: ${new Date(issue.created_on).toLocaleDateString()}</span>
+                <span><i class="fas fa-clock mr-1"></i>Updated: ${new Date(issue.updated_on).toLocaleDateString()}</span>
+              </div>
+              <div class="flex space-x-2 justify-end">
+                <a href="#" class="closeIssue px-3 py-1 bg-yellow-500 text-white rounded-md hover:bg-yellow-600 transition-colors text-sm" id="${issue._id}">
+                  ${issue.open ? 'Close' : 'Reopen'}
+                </a>
+                <a href="#" class="deleteIssue px-3 py-1 bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors text-sm" id="${issue._id}">
+                  Delete
+                </a>
+              </div>
+              <p class="text-xs text-gray-400 mt-2">ID: ${issue._id}</p>
+            </div>
+          `;
+        });
+        
+        $('#issueDisplay').html(issueHtml.join(''));
+      }
+      
+      // Update statistics
+      function updateStats(issues) {
+        $('#totalIssues').text(issues.length);
+        $('#openIssues').text(issues.filter(issue => issue.open).length);
+        $('#closedIssues').text(issues.filter(issue => !issue.open).length);
+      }
+      
+      // Filter issues
+      $('#filterAll').click(function() {
+        $(this).removeClass('bg-gray-200 text-gray-800').addClass('bg-blue-600 text-white');
+        $('#filterOpen, #filterClosed').removeClass('bg-blue-600 text-white').addClass('bg-gray-200 text-gray-800');
+        updateIssueDisplay(allIssues);
+      });
+      
+      $('#filterOpen').click(function() {
+        $(this).removeClass('bg-gray-200 text-gray-800').addClass('bg-blue-600 text-white');
+        $('#filterAll, #filterClosed').removeClass('bg-blue-600 text-white').addClass('bg-gray-200 text-gray-800');
+        updateIssueDisplay(allIssues.filter(issue => issue.open));
+      });
+      
+      $('#filterClosed').click(function() {
+        $(this).removeClass('bg-gray-200 text-gray-800').addClass('bg-blue-600 text-white');
+        $('#filterAll, #filterOpen').removeClass('bg-blue-600 text-white').addClass('bg-gray-200 text-gray-800');
+        updateIssueDisplay(allIssues.filter(issue => !issue.open));
+      });
+      
+      // Submit a new issue
+      $('#newIssue').submit(function(e) {
+        e.preventDefault();
+        $(this).attr('action', "/api/issues/" + currentProject);
+        $.ajax({
+          type: "POST",
+          url: url,
+          data: $(this).serialize(),
+          success: function(data) { 
+            fetchIssues();
+            $('#newIssue')[0].reset();
+          }
+        });
+      });
+      
+      // Close an issue
+      $('#issueDisplay').on('click', '.closeIssue', function(e) {
+        e.preventDefault();
+        let issueId = $(this).attr('id');
+        let issue = allIssues.find(i => i._id === issueId);
+        let newState = !issue.open;
+        
+        $.ajax({
+          type: "PUT",
+          url: url,
+          data: {_id: issueId, open: newState},
+          success: function(data) { 
+            fetchIssues();
+          }
+        });
+      });
+      
+      // Delete an issue
+      $('#issueDisplay').on('click', '.deleteIssue', function(e) {
+        e.preventDefault();
+        if (confirm('Are you sure you want to delete this issue? This action cannot be undone.')) {
+          $.ajax({
+            type: "DELETE",
+            url: url,
+            data: {_id: $(this).attr('id')},
+            success: function(data) { 
+              fetchIssues();
+            }
+          });
+        }
+      });
+      
+      // Initial fetch
+      fetchIssues();
+    });
+  </script>
+</body>
+</html>

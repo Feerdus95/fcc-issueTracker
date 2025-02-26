@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Issue Tracker | Dashboard</title>
+  <link rel="stylesheet" href="/custom.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+</head>
+<body>
+  <header class="header">
+    <div class="container header-content">
+      <h1>Issue Tracker</h1>
+      <nav>
+        <ul class="nav-list">
+          <li><a href="/" class="nav-link active">Dashboard</a></li>
+          <li><a href="/issues/test-project" class="nav-link">Project Issues</a></li>
+          <li><a href="/usage" class="nav-link">API Usage</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container" style="padding-top: 1.5rem; padding-bottom: 1.5rem;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+      <h2 style="font-size: 1.5rem; font-weight: 600;">Project Dashboard</h2>
+      <a href="/issues/test-project" class="btn">
+        View All Issues
+      </a>
+    </div>
+
+    <!-- Issue Form and Recent Issues -->
+    <div class="grid grid-cols-3">
+      <section class="card" style="grid-column: span 2;">
+        <h2 class="card-title">
+          <i class="fas fa-plus-circle"></i>Create New Issue
+        </h2>
+        <form id="issueForm" action="/api/issues/test-project" method="post">
+          <div class="grid grid-cols-2">
+            <div class="form-group">
+              <label for="issueTitle" class="form-label">Issue Title</label>
+              <input type="text" id="issueTitle" name="issue_title" placeholder="Enter issue title" class="form-control" required>
+            </div>
+            <div class="form-group">
+              <label for="createdBy" class="form-label">Created By</label>
+              <input type="text" id="createdBy" name="created_by" placeholder="Your name" class="form-control" required>
+            </div>
+            <div class="form-group">
+              <label for="assignedTo" class="form-label">Assigned To</label>
+              <input type="text" id="assignedTo" name="assigned_to" placeholder="Assignee name" class="form-control">
+            </div>
+            <div class="form-group">
+              <label for="statusText" class="form-label">Status</label>
+              <input type="text" id="statusText" name="status_text" placeholder="Current status" class="form-control">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="issueText" class="form-label">Issue Description</label>
+            <textarea id="issueText" name="issue_text" placeholder="Describe the issue in detail" class="form-control" required></textarea>
+          </div>
+          <button type="submit" class="btn">
+            <i class="fas fa-save"></i>Submit Issue
+          </button>
+        </form>
+      </section>
+
+      <!-- Recent Issues -->
+      <section class="card">
+        <h2 class="card-title">
+          <i class="fas fa-clock"></i>Recent Issues
+        </h2>
+        <div id="recentIssues">
+          <!-- Recent issues will appear here -->
+          <div style="text-align: center; color: #6b7280; padding: 1rem 0;">
+            <i class="fas fa-spinner fa-spin" style="font-size: 1.5rem; margin-bottom: 0.5rem;"></i>
+            <p>Loading recent issues...</p>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- All Issues -->
+    <section class="card" style="margin-top: 2rem;">
+      <h2 class="card-title">
+        <i class="fas fa-list-ul"></i>All Issues
+      </h2>
+      <div id="issueList">
+        <!-- Issues will be dynamically inserted here -->
+        <div style="text-align: center; color: #6b7280; padding: 1rem 0;">
+          <i class="fas fa-spinner fa-spin" style="font-size: 1.5rem; margin-bottom: 0.5rem;"></i>
+          <p>Loading issues...</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <p>Issue Tracker &copy; 2025 | A project for freeCodeCamp Quality Assurance certification</p>
+    </div>
+  </footer>
+
+  <script src="/script.js"></script>
+</body>
+</html>
