@@ -62,8 +62,12 @@ app.use(function(req, res, next) {
 
 // Start server for normal operation
 const startServer = () => {
-  const listener = app.listen(process.env.PORT || 3000, function () {
-    console.log('Your app is listening on port ' + listener.address().port);
+  // Get PORT from environment variable for services like Render
+  const PORT = process.env.PORT || 3000;
+  
+  const listener = app.listen(PORT, '0.0.0.0', function () {
+    console.log('Your app is listening on port ' + PORT);
+    console.log('Environment:', process.env.NODE_ENV || 'development');
   });
 };
 
