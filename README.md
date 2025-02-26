@@ -121,22 +121,22 @@ Deletes an issue.
 
 This project is configured for easy deployment on Render. It includes:
 
-1. **`start-render.js`** - A special startup file that ensures proper port binding for Render
-2. **`Procfile`** - Defines the web process for cloud platforms
+1. **Server Configuration** - The main server.js file is designed to work seamlessly in all environments
+2. **Procfile** - Defines the web process for cloud platforms
 
 To deploy on Render:
 
 1. Connect your GitHub repository to Render
 2. Create a new Web Service
-3. Set the following:
+3. Use these settings:
    - Build Command: `npm install`
-   - Start Command: `npm start`
+   - Start Command: `node server.js`
    
 4. Set environment variables:
-   - `PORT`: 3000 (or any other port)
+   - `PORT`: 3000 (or any port assigned by Render)
    - `NODE_ENV`: production
 
-The application includes special logic to ensure it works correctly in all environments, including test mode on cloud platforms.
+The application is designed to start correctly regardless of environment, making it robust for cloud deployment.
 
 ## 🧪 Testing
 
@@ -151,12 +151,12 @@ The test suite includes:
 
 ### Testing in Deployment Environments
 
-When deploying to platforms like Render, make sure to set these environment variables:
-- `PORT`: The port your application will listen on (e.g., 3000)
-- `NODE_ENV`: Set to "production" for production environments
-- `RENDER`: Set to "true" if deploying to Render
+When deploying to platforms like Render, the testing is simplified:
+- The server starts automatically
+- Tests connect to the running server
+- No need for special configuration
 
-The application is configured to start the server correctly in all environments, including test mode on Render.
+This makes the application more resilient and easier to maintain across different environments.
 
 ## 🎓 Credits
 

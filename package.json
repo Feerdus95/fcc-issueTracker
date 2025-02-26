@@ -4,7 +4,7 @@
 	"description": "Issue Tracker Boilerplate",
 	"main": "server.js",
 	"scripts": {
-		"start": "node start-render.js",
+		"start": "node server.js",
 		"dev": "set NODE_ENV=development && node server.js",
 		"test": "set NODE_ENV=test && mocha --timeout 10000 --recursive --exit --ui tdd tests/",
 		"build:css": "tailwindcss -i ./public/style.css -o ./public/style.css --watch"

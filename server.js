@@ -66,13 +66,8 @@ const startServer = (port) => {
   });
 };
 
-// For testing
-if (process.env.NODE_ENV === 'test') {
-  // Don't start the server automatically in test mode - tests will call startServer
-  console.log('Test environment - server will be started by tests');
-} else {
-  // In development and production, start the server automatically
-  startServer();
-}
+// Always start the server regardless of environment
+// This ensures it works in all environments including Render
+startServer();
 
 module.exports = { app, startServer };
